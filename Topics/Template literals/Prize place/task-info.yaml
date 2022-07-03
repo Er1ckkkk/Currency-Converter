@@ -1,0 +1,15 @@
+type: code
+files:
+- name: main.js
+  visible: true
+  text: |-
+    let userName = "Brad";
+    let place = "first";
+    // write your code below
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/8737#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: Sun, 03 Jul 2022 00:25:51 UTC
+record: -1

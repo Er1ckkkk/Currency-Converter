@@ -1,0 +1,17 @@
+type: code
+files:
+- name: main.js
+  visible: true
+  text: |-
+    let month = "December";
+    let day = "12";
+    let year = "2121;
+
+    console.log(`Today is $month $day, $year.`);
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/8738#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: Sun, 03 Jul 2022 00:26:55 UTC
+record: -1
