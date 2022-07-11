@@ -1,0 +1,17 @@
+type: choice
+is_multiple_choice: false
+options:
+- text: '[undefined, undefined, undefined, undefined]'
+- text: '[undefined]'
+- text: '[4]'
+- text: '[4, 4, 4, 4]'
+files:
+- name: main.js
+  visible: true
+  text: |+
+    // You can experiment here, it won’t be checked
+
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/16144#comment
+status: Unchecked
+record: -1
