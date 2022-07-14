@@ -15,27 +15,30 @@ countries.forEach(function (countries) {
     console.log(`1 USD equals  ${countries.value} ${countries.name}`);
 });
 
-console.log("I can convert USD to these currencies: JPY, EUR, RUB, USD, GBP");
-console.log("Type the currency you wish to convert: USD");
-//There are two ways to call the input function:
-let userInput = input("To: ").toUpperCase();
+console.log("What do you want to convert?")
+let fromInput = input("From: ").toUpperCase();
+fromInput = checkIfInArray(fromInput, countries);
 
-//update userInput to hold values of the name and currency of the country
-userInput = checkIfInArray(userInput, countries);
+if (fromInput == false)
+    return false;
 
-if (userInput == false) {
+let toInput = input("To: ").toUpperCase();
+toInput = checkIfInArray(toInput, countries);
 
+if (toInput == false) {
+    return false;
 } else {
-    let inputAmount = Number(input("Amount: "));
-    if (inputAmount < 1) {
+    let amountInput = Number(input("Amount: "));
+    if (amountInput < 1) {
         console.log("The amount can not be less than 1");
-    } else if (isNaN(inputAmount)) {
+    } else if (isNaN(amountInput)) {
         console.log("The amount has to be a number")
     } else {
-        doConversion(inputAmount, userInput);
+        doConversion(amountInput, fromInput, toInput);
     }
 }
 
+//Functions
 function checkIfInArray(userInput, countries) {
     for (let i = 0; i < countries.length; i++) {
         if (userInput === countries[i].name) {
@@ -46,15 +49,13 @@ function checkIfInArray(userInput, countries) {
         } else if (i === 4 && userInput !== countries[4].name) {
             console.log("Unknown currency");
             return false;
-
         }
     }
     return userInput;
 }
 
-function doConversion(inputAmount, userInput) {
-    let result = (inputAmount * userInput.value).toFixed(4);
-    console.log(`Result: ${inputAmount} USD equals ${result + " " + userInput.name}`);
-
+function doConversion(inputAmount, fromAmount, toAmount) {
+    let result = ((toAmount.value / fromAmount.value) * inputAmount).toFixed(4);
+    console.log(`Result: ${inputAmount} ${fromAmount.name} equals ${result} ${toAmount.name}`);
 }
 

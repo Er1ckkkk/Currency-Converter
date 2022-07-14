@@ -4,7 +4,7 @@ from hstest import StageTest, CheckResult, dynamic_test, TestedProgram
 class CurrencyConverter(StageTest):
     test_amounts = ["1", "3", "18", "50", "115"]
     usd = 1.0
-    jpy = 113.5
+    jpy = 113.50
     eur = 0.89
     rub = 74.36
     gbp = 0.75
@@ -14,7 +14,7 @@ class CurrencyConverter(StageTest):
 
     for i in range(0, len(test_amounts)):
         for j in range(0, len(known_currencies)):
-            test_data.append([test_amounts[i], known_currencies[j]])
+            test_data.append([test_amounts[i], known_currencies[j], known_currencies[len(known_currencies) - 1 - j]])
 
     def convert_currency(self, amount, _from, to):
         _from = _from.upper()
@@ -33,28 +33,31 @@ class CurrencyConverter(StageTest):
 1 USD equals  0.89 EUR
 1 USD equals  74.36 RUB
 1 USD equals  0.75 GBP
-I can convert USD to these currencies: JPY, EUR, RUB, USD, GBP
-Type the currency you wish to convert: USD
-To:"""
+What do you want to convert?
+From:"""
         if message not in output.strip():
             return CheckResult.wrong('Your output should be like in the example!')
         return CheckResult.correct()
 
     @dynamic_test(data=test_data)
-    def test2(self, amounts, currencies):
+    def test2(self, amounts, from_currency, to_currency):
         main = TestedProgram()
         main.start()
         if main.is_waiting_input():
-            output = main.execute(currencies)
+            output = main.execute(from_currency)
+            message = "To:"
+            if message not in output.strip():
+                return CheckResult.wrong('You should ask for the "To" currency input!')
+            output = main.execute(to_currency)
             message = "Amount:"
             if message not in output.strip():
                 return CheckResult.wrong('You should ask for the "Amount" input!')
             output = main.execute(amounts)
-            if self.convert_currency(amounts, "USD", currencies) not in output.strip():
+            if self.convert_currency(amounts, from_currency, to_currency) not in output.strip():
                 return CheckResult.wrong('You should output the correct result as in the example!')
             return CheckResult.correct()
 
-        return CheckResult.wrong('You should ask for the "To" input!')
+        return CheckResult.wrong('You should ask for the "From" currency input!')
 
     @dynamic_test()
     def test3(self):
@@ -68,14 +71,30 @@ To:"""
             elif not main.is_finished():
                 return CheckResult.wrong('The program should finish if an unknown input occurs.')
             return CheckResult.correct()
-        return CheckResult.wrong('You should ask for the "To" input!')
+        return CheckResult.wrong('You should ask for the "From" currency input!')
 
-    @dynamic_test(data=["-1", "a"])
-    def test4(self, amount):
+    @dynamic_test()
+    def test4(self):
         main = TestedProgram()
         main.start()
         if main.is_waiting_input():
             main.execute("USD")
+            output = main.execute("This is a currency, believe me!")
+            message = "Unknown currency"
+            if message not in output.strip():
+                return CheckResult.wrong('You should output correct message if an unknown input occurs.')
+            elif not main.is_finished():
+                return CheckResult.wrong('The program should finish if an unknown input occurs.')
+            return CheckResult.correct()
+        return CheckResult.wrong('You should ask for the "To" currency input!')
+
+    @dynamic_test(data=["-1", "a"])
+    def test5(self, amount):
+        main = TestedProgram()
+        main.start()
+        if main.is_waiting_input():
+            main.execute("USD")
+            main.execute("GBP")
 
             output = main.execute(amount)
             message = "The amount can not be less than 1"
@@ -88,24 +107,28 @@ To:"""
                 return CheckResult.wrong('The program should finish if a negative or non-numeric input is given.')
             return CheckResult.correct()
 
-        return CheckResult.wrong('You should ask for the "To" input!')
+        return CheckResult.wrong('You should ask for the "To" currency input!')
 
     @dynamic_test(data=["JpY", "jpy"])
-    def test5(self, currency):
+    def test6(self, currency):
         main = TestedProgram()
         main.start()
         if main.is_waiting_input():
             output = main.execute(currency)
+            message = "To:"
+            if message not in output.strip():
+                return CheckResult.wrong('Your program should not be case sensitive!')
 
+            output = main.execute(currency)
             message = "Amount:"
             if message not in output.strip():
                 return CheckResult.wrong('Your program should not be case sensitive!')
             output = main.execute(self.test_amounts[1])
-            if self.convert_currency(self.test_amounts[1], "USD", currency) not in output.strip():
+            if self.convert_currency(self.test_amounts[1], currency, currency) not in output.strip():
                 return CheckResult.wrong('You should output the correct result as in the example!')
             return CheckResult.correct()
 
-        return CheckResult.wrong('You should ask for the "To" input!')
+        return CheckResult.wrong('You should ask for the "From" currency input!')
 
 
 if __name__ == '__main__':
